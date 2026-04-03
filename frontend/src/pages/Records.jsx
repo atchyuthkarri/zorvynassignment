@@ -36,8 +36,13 @@ export default function Records() {
       if (filters.to) params.to = filters.to;
 
       const res = await recordAPI.getAll(params);
-      setRecords(res.data.records);
-      setPagination(res.data.pagination);
+      setRecords(res.data.data || []);
+      setPagination({
+        page: res.data.page,
+        limit: res.data.limit,
+        total: res.data.total,
+        totalPages: Math.ceil((res.data.total || 0) / (res.data.limit || 15))
+      });
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to load records.');
     } finally {
